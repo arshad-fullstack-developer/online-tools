@@ -1,0 +1,84 @@
+<?php
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ToolController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Api\SitemapCrawlerController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ToolController as AdminToolController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\PageController as AdminPageController;
+use App\Http\Controllers\Admin\BlogController as AdminBlogController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('categories.show');
+
+// Blog Routes
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+
+// Specific page routes (before dynamic route)
+Route::get('/about', [PageController::class, 'show'])->defaults('slug', 'about');
+Route::get('/tools', [PageController::class, 'show'])->defaults('slug', 'tools');
+Route::get('/contact', [PageController::class, 'show'])->defaults('slug', 'contact');
+
+// Tool routes (must come after /tools page route)
+Route::get('/tools/{slug}', [ToolController::class, 'show'])->name('tools.show');
+Route::post('/tools/{slug}/log-usage', [ToolController::class, 'logUsage'])->name('tools.log-usage');
+
+// Sitemap
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// API Routes
+Route::post('/api/crawl-sitemap', [SitemapCrawlerController::class, 'crawl']);
+Route::post('/api/detect-ai-content', [\App\Http\Controllers\Api\AIDetectionController::class, 'detectAIContent']);
+Route::post('/api/contact', [\App\Http\Controllers\ContactController::class, 'submit']);
+
+// Auth routes (must be before dynamic pages)
+require __DIR__.'/auth.php';
+
+// Admin Routes
+Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Tools Management
+    Route::resource('tools', AdminToolController::class);
+    Route::post('/tools/{tool}/toggle-active', [AdminToolController::class, 'toggleActive'])->name('tools.toggle-active');
+
+    // Categories Management
+    Route::resource('categories', AdminCategoryController::class);
+
+    // Pages Management
+    Route::resource('pages', AdminPageController::class);
+    Route::post('/pages/{page}/toggle-active', [AdminPageController::class, 'toggleActive'])->name('pages.toggle-active');
+
+    // Blog Management
+    Route::resource('blogs', AdminBlogController::class);
+    Route::post('/blogs/{blog}/toggle-publish', [AdminBlogController::class, 'togglePublish'])->name('blogs.toggle-publish');
+
+    // Settings
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+// Dynamic Pages (must be last to avoid conflicts with all other routes)
+Route::get('/{slug}', [PageController::class, 'show'])->name('page.show')->where('slug', '[a-z0-9\-]+');
