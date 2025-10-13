@@ -80,7 +80,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                     <div>
-                        <div class="text-5xl font-bold text-primary-400 mb-2">10+</div>
+                        <div class="text-5xl font-bold text-primary-400 mb-2">{{ totalTools }}+</div>
                         <div class="text-gray-400">Tools Available</div>
                     </div>
                     <div>
@@ -162,5 +162,9 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({
     seo: Object,
+    totalTools: {
+        type: Number,
+        default: 0
+    },
 });
 </script>

@@ -77,42 +77,12 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { getCategoryIcon, getToolIcon } from '@/config/icons';
 
 defineProps({
     categories: Array,
     seo: Object,
 });
-
-const iconMap = {
-    'type': '📝',
-    'calendar': '📅',
-    'dollar-sign': '💰',
-    'code': '💻',
-    'text': '🔤',
-    'braces': '{}',
-    'link': '🔗',
-    'cake': '🎂',
-    'calendar-range': '📆',
-    'percent': '%',
-    'calculator': '🧮',
-    'binary': '01',
-    'key': '🔑',
-    'activity': '💪',
-    'heart': '❤️',
-    'scale': '⚖️',
-    'fire': '🔥',
-    'droplet': '💧',
-    'body': '🧍',
-    'health': '🏥',
-    'code': '💻',
-    'map': '🗺️',
-    'trending-up': '📈',
-    'chart': '📊',
-    'coins': '💰',
-};
-
-const getCategoryIcon = (icon) => iconMap[icon] || '🛠️';
-const getToolIcon = (icon) => iconMap[icon] || '⚙️';
 
 const formatNumber = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';

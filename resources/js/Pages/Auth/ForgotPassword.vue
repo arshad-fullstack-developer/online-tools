@@ -1,11 +1,13 @@
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 
 defineProps({
     status: {
         type: String,
     },
 });
+
+const page = usePage();
 
 const form = useForm({
     email: '',
@@ -29,11 +31,20 @@ const submit = () => {
 
             <div class="relative flex flex-col justify-center items-center w-full px-12 text-white">
                 <div class="max-w-md">
-                    <div class="flex items-center space-x-3 mb-8">
-                        <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
-                            <span class="text-4xl">🛠️</span>
+                    <div class="flex items-center justify-center mb-8">
+                        <!-- Show footer_logo if exists, otherwise show regular logo -->
+                        <div v-if="page.props.settings?.footer_logo" class="h-32 rounded-lg overflow-hidden">
+                            <img :src="`/storage/${page.props.settings.footer_logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                         </div>
-                        <h1 class="text-3xl font-bold">Online Tools</h1>
+                        <div v-else-if="page.props.settings?.logo" class="h-32 rounded-lg overflow-hidden">
+                            <img :src="`/storage/${page.props.settings.logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                        </div>
+                        <div v-else class="flex items-center space-x-3">
+                            <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                                <span class="text-4xl">🛠️</span>
+                            </div>
+                            <h1 class="text-3xl font-bold">{{ page.props.settings?.site_name || 'Online Tools' }}</h1>
+                        </div>
                     </div>
                     <h2 class="text-4xl font-bold mb-4">Reset Password</h2>
                     <p class="text-xl text-primary-100 mb-8">
@@ -73,13 +84,22 @@ const submit = () => {
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
             <div class="w-full max-w-md">
                 <!-- Logo for mobile -->
-                <div class="lg:hidden flex items-center justify-center space-x-2 mb-8">
-                    <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
-                        <span class="text-2xl">🛠️</span>
+                <div class="lg:hidden flex items-center justify-center mb-8">
+                    <!-- Show footer_logo if exists, otherwise show regular logo -->
+                    <div v-if="page.props.settings?.footer_logo" class="h-20 rounded-lg overflow-hidden">
+                        <img :src="`/storage/${page.props.settings.footer_logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                     </div>
-                    <span class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                        Online Tools
-                    </span>
+                    <div v-else-if="page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
+                        <img :src="`/storage/${page.props.settings.logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                    </div>
+                    <div v-else class="flex items-center space-x-2">
+                        <div class="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">
+                            <span class="text-2xl">🛠️</span>
+                        </div>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                            {{ page.props.settings?.site_name || 'Online Tools' }}
+                        </span>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">

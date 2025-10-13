@@ -18,6 +18,8 @@ class SettingSeeder extends Seeder
             ['key' => 'site_tagline', 'value' => 'Free Online Tools & Calculators', 'type' => 'text', 'group' => 'general'],
             ['key' => 'site_description', 'value' => 'Collection of free online tools including calculators, converters, and formatters.', 'type' => 'textarea', 'group' => 'general'],
             ['key' => 'contact_email', 'value' => 'contact@example.com', 'type' => 'text', 'group' => 'general'],
+            ['key' => 'logo', 'value' => '', 'type' => 'file', 'group' => 'general'],
+            ['key' => 'footer_logo', 'value' => '', 'type' => 'file', 'group' => 'general'],
             
             // SEO Settings
             ['key' => 'default_meta_title', 'value' => 'Online Tools - Free Calculators & Converters', 'type' => 'text', 'group' => 'seo'],
@@ -32,7 +34,10 @@ class SettingSeeder extends Seeder
         ];
 
         foreach ($settings as $setting) {
-            Setting::create($setting);
+            Setting::updateOrCreate(
+                ['key' => $setting['key']],
+                $setting
+            );
         }
     }
 }

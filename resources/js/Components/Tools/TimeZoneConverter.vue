@@ -28,9 +28,10 @@
                             <label class="block font-semibold text-gray-700 mb-2">Time Zone</label>
                             <select
                                 v-model="fromTimezone"
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-500 focus:outline-none"
+                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-500 focus:outline-none bg-white cursor-pointer"
                                 @change="convert"
                             >
+                                <option value="" disabled>Select timezone</option>
                                 <option v-for="tz in props.timezones" :key="tz.value" :value="tz.value">
                                     {{ tz.label }}
                                 </option>
@@ -69,9 +70,10 @@
                         <label class="block font-semibold text-gray-700 mb-2">Time Zone</label>
                         <select
                             v-model="toTimezone"
-                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-500 focus:outline-none"
+                            class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary-500 focus:outline-none bg-white cursor-pointer"
                             @change="convert"
                         >
+                            <option value="" disabled>Select timezone</option>
                             <option v-for="tz in props.timezones" :key="tz.value" :value="tz.value">
                                 {{ tz.label }}
                             </option>

@@ -39,7 +39,11 @@ const submit = () => {
             <div class="relative flex flex-col justify-center items-center w-full px-12 text-white">
                 <div class="max-w-md">
                     <div class="flex items-center justify-center mb-8">
-                        <div v-if="page.props.settings?.logo" class="h-32 rounded-lg overflow-hidden">
+                        <!-- Show footer_logo if exists, otherwise show regular logo -->
+                        <div v-if="page.props.settings?.footer_logo" class="h-32 rounded-lg overflow-hidden">
+                            <img :src="`/storage/${page.props.settings.footer_logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                        </div>
+                        <div v-else-if="page.props.settings?.logo" class="h-32 rounded-lg overflow-hidden">
                             <img :src="`/storage/${page.props.settings.logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                         </div>
                         <div v-else class="w-32 h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center">
@@ -85,7 +89,11 @@ const submit = () => {
             <div class="w-full max-w-md">
                 <!-- Logo for mobile -->
                 <div class="lg:hidden flex items-center justify-center mb-8">
-                    <div v-if="page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
+                    <!-- Show footer_logo if exists, otherwise show regular logo -->
+                    <div v-if="page.props.settings?.footer_logo" class="h-20 rounded-lg overflow-hidden">
+                        <img :src="`/storage/${page.props.settings.footer_logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                    </div>
+                    <div v-else-if="page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
                         <img :src="`/storage/${page.props.settings.logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                     </div>
                     <div v-else class="w-20 h-20 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center">

@@ -93,7 +93,6 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
                 <div class="grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h2 class="text-4xl font-bold text-gray-900 mb-6">Our Mission</h2>
                         <div class="prose prose-lg" v-html="page.content"></div>
                     </div>
                     <div class="bg-gradient-to-br from-primary-50 to-primary-100 rounded-2xl p-8">
@@ -141,7 +140,7 @@
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                         <div>
-                            <div class="text-5xl font-bold text-primary-400 mb-2">10+</div>
+                            <div class="text-5xl font-bold text-primary-400 mb-2">{{ totalTools }}+</div>
                             <div class="text-gray-400">Tools Available</div>
                         </div>
                         <div>
@@ -189,11 +188,11 @@
             </div>
         </div>
 
-        <!-- Regular Page Content -->
+        <!-- Regular Page Content (Legal Pages, etc.) -->
         <div v-else class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="max-w-4xl mx-auto">
                 <div 
-                    class="prose prose-lg max-w-none"
+                    class="prose prose-lg prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-strong:text-gray-900 prose-strong:font-semibold prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline prose-ul:my-6 prose-li:my-2 max-w-none bg-white rounded-2xl shadow-lg p-8 md:p-12 border border-gray-100"
                     v-html="page.content"
                 ></div>
             </div>
@@ -342,12 +341,17 @@ import { Head, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from 'vue';
 import axios from 'axios';
+import { getCategoryIcon, getToolIcon } from '@/config/icons';
 
 const props = defineProps({
     page: Object,
     seo: Object,
     categories: Array,
     isToolsPage: Boolean,
+    totalTools: {
+        type: Number,
+        default: 0
+    },
 });
 
 const contactForm = ref({
@@ -356,38 +360,6 @@ const contactForm = ref({
     subject: '',
     message: '',
 });
-
-const iconMap = {
-    'type': '📝',
-    'calendar': '📅',
-    'dollar-sign': '💰',
-    'code': '💻',
-    'text': '🔤',
-    'braces': '{}',
-    'link': '🔗',
-    'cake': '🎂',
-    'calendar-range': '📆',
-    'percent': '%',
-    'calculator': '🧮',
-    'binary': '01',
-    'key': '🔑',
-    'activity': '💪',
-    'heart': '❤️',
-    'scale': '⚖️',
-    'fire': '🔥',
-    'droplet': '💧',
-    'body': '🧍',
-    'health': '🏥',
-    'code': '💻',
-    'map': '🗺️',
-    'trending-up': '📈',
-    'chart': '📊',
-    'cpu': '🤖',
-    'coins': '💰',
-};
-
-const getCategoryIcon = (icon) => iconMap[icon] || '🛠️';
-const getToolIcon = (icon) => iconMap[icon] || '⚙️';
 
 const formatNumber = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -421,48 +393,3 @@ const submitContactForm = async () => {
     }
 };
 </script>
-
-<style scoped>
-.prose {
-    color: #374151;
-}
-
-.prose h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    color: #111827;
-}
-
-.prose h3 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-    color: #111827;
-}
-
-.prose p {
-    margin-bottom: 1rem;
-    line-height: 1.75;
-}
-
-.prose ul, .prose ol {
-    margin-left: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.prose li {
-    margin-bottom: 0.5rem;
-}
-
-.prose a {
-    color: #0ea5e9;
-    text-decoration: underline;
-}
-
-.prose a:hover {
-    color: #0284c7;
-}
-</style>

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -36,13 +37,23 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $validated = $request->validate([
+        // Debug: Log all incoming data
+        Log::info('Settings Update Request', [
+            'has_logo' => $request->hasFile('logo'),
+            'has_footer_logo' => $request->hasFile('footer_logo'),
+            'has_favicon' => $request->hasFile('favicon'),
+            'all_files' => $request->allFiles(),
+            'all_input' => $request->except(['logo', 'footer_logo', 'favicon']),
+        ]);
+
+        try {
+            $validated = $request->validate([
             'site_name' => 'required|string|max:255',
             'site_tagline' => 'nullable|string|max:255',
             'site_description' => 'nullable|string',
-            'logo' => 'nullable|image|max:2048',
-            'footer_logo' => 'nullable|image|max:2048',
-            'favicon' => 'nullable|image|max:1024',
+            'logo' => 'nullable|image|max:5120',
+            'footer_logo' => 'nullable|image|max:5120',
+            'favicon' => 'nullable|image|max:2048',
             'contact_email' => 'nullable|email',
             'contact_phone' => 'nullable|string',
             'address' => 'nullable|string',
@@ -52,25 +63,53 @@ class SettingController extends Controller
             'linkedin' => 'nullable|url',
         ]);
 
-        foreach ($validated as $key => $value) {
-            if ($request->hasFile($key)) {
-                // Handle file upload
-                $oldSetting = Setting::where('key', $key)->first();
+        // File fields that should not be updated if null
+        $fileFields = ['logo', 'footer_logo', 'favicon'];
+        
+        // Process file uploads first (they might not be in $validated if null)
+        foreach ($fileFields as $fileField) {
+            if ($request->hasFile($fileField)) {
+                Log::info("Uploading file for: {$fileField}");
+                $oldSetting = Setting::where('key', $fileField)->first();
                 if ($oldSetting && $oldSetting->value) {
                     Storage::disk('public')->delete($oldSetting->value);
                 }
-                $value = $request->file($key)->store('settings', 'public');
+                $filePath = $request->file($fileField)->store('settings', 'public');
+                
+                Setting::updateOrCreate(
+                    ['key' => $fileField],
+                    ['value' => $filePath, 'type' => 'file', 'group' => 'general']
+                );
+                
+                Log::info("File uploaded successfully: {$fileField} = {$filePath}");
             }
-
-            Setting::updateOrCreate(
-                ['key' => $key],
-                ['value' => $value, 'type' => $request->hasFile($key) ? 'image' : 'text']
-            );
         }
 
-        // Clear settings cache
+        // Process other fields (non-file fields only)
+        foreach ($validated as $key => $value) {
+            if (!in_array($key, $fileFields)) {
+                // Only update non-file fields
+                if ($value !== null && $value !== '') {
+                    Setting::updateOrCreate(
+                        ['key' => $key],
+                        ['value' => $value, 'type' => 'text', 'group' => 'general']
+                    );
+                }
+            }
+        }
+
+        // Clear all caches
         Cache::forget('site_settings');
+        Cache::flush();
 
         return back()->with('success', 'Settings updated successfully!');
+        
+        } catch (\Exception $e) {
+            Log::error('Settings update failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return back()->withErrors(['error' => 'Failed to update settings: ' . $e->getMessage()]);
+        }
     }
 }

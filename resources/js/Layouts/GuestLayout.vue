@@ -1,6 +1,8 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+
+const page = usePage();
 </script>
 
 <template>
@@ -9,7 +11,14 @@ import { Link } from '@inertiajs/vue3';
     >
         <div>
             <Link href="/">
-                <ApplicationLogo class="h-20 w-20 fill-current text-gray-500" />
+                <!-- Show footer_logo if exists, otherwise show regular logo, fallback to ApplicationLogo -->
+                <div v-if="page.props.settings?.footer_logo" class="h-20 rounded-lg overflow-hidden">
+                    <img :src="`/storage/${page.props.settings.footer_logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                </div>
+                <div v-else-if="page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
+                    <img :src="`/storage/${page.props.settings.logo}`" :alt="page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                </div>
+                <ApplicationLogo v-else class="h-20 w-20 fill-current text-gray-500" />
             </Link>
         </div>
 

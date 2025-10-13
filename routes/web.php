@@ -47,6 +47,27 @@ Route::post('/api/crawl-sitemap', [SitemapCrawlerController::class, 'crawl']);
 Route::post('/api/detect-ai-content', [\App\Http\Controllers\Api\AIDetectionController::class, 'detectAIContent']);
 Route::post('/api/contact', [\App\Http\Controllers\ContactController::class, 'submit']);
 
+// Debug route - Remove after testing
+Route::get('/debug-settings', function() {
+    try {
+        $settings = \App\Models\Setting::all();
+        $logo = \App\Models\Setting::where('key', 'logo')->first();
+        $footerLogo = \App\Models\Setting::where('key', 'footer_logo')->first();
+        
+        return '<h1>Settings Debug</h1>' .
+               '<h2>Logo:</h2>' .
+               '<p>Exists: ' . ($logo ? 'Yes' : 'No') . '</p>' .
+               '<p>Value: ' . ($logo ? $logo->value : 'NULL') . '</p>' .
+               '<h2>Footer Logo:</h2>' .
+               '<p>Exists: ' . ($footerLogo ? 'Yes' : 'No') . '</p>' .
+               '<p>Value: ' . ($footerLogo ? $footerLogo->value : 'NULL') . '</p>' .
+               '<h2>All Settings:</h2>' .
+               '<pre>' . print_r($settings->pluck('value', 'key')->toArray(), true) . '</pre>';
+    } catch (\Exception $e) {
+        return 'Error: ' . $e->getMessage();
+    }
+});
+
 // Auth routes (must be before dynamic pages)
 require __DIR__.'/auth.php';
 

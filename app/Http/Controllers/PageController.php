@@ -22,6 +22,9 @@ class PageController extends Controller
         // Increment view count
         $page->incrementViews();
 
+        // Get total tools count for all pages
+        $totalTools = Tool::where('is_active', true)->count();
+
         // Special handling for tools page
         if ($slug === 'tools') {
             $categories = Category::with(['tools' => function ($query) {
@@ -36,6 +39,7 @@ class PageController extends Controller
                 'categories' => $categories,
                 'seo' => $page->getSeoData(),
                 'isToolsPage' => true,
+                'totalTools' => $totalTools,
             ]);
         }
 
@@ -43,6 +47,7 @@ class PageController extends Controller
             'page' => $page,
             'seo' => $page->getSeoData(),
             'isToolsPage' => false,
+            'totalTools' => $totalTools,
         ]);
     }
 

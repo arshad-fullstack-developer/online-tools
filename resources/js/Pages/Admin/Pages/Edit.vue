@@ -56,7 +56,7 @@
                             <div class="flex items-center justify-between mb-2">
                                 <label class="block text-sm font-semibold text-gray-700">Content *</label>
                                 <button 
-                                    v-if="form.slug === 'home'"
+                                    v-if="isHtmlTogglePage || form.slug === 'home'"
                                     @click="toggleHtmlMode" 
                                     type="button"
                                     class="text-xs px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors"
@@ -65,9 +65,9 @@
                                 </button>
                             </div>
                             
-                            <!-- HTML Mode (for home page) -->
+                            <!-- HTML Mode (for home page and other pages) -->
                             <textarea 
-                                v-if="form.slug === 'home' && isHtmlMode"
+                                v-if="(form.slug === 'home' || isHtmlTogglePage) && isHtmlMode"
                                 v-model="form.content"
                                 rows="20"
                                 class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all font-mono text-sm"
@@ -78,7 +78,7 @@
                             <RichTextEditor v-else v-model="form.content" />
                             
                             <p v-if="form.errors.content" class="mt-1 text-sm text-red-600">{{ form.errors.content }}</p>
-                            <p v-if="form.slug === 'home' && isHtmlMode" class="mt-1 text-xs text-gray-500">
+                            <p v-if="(form.slug === 'home' || isHtmlTogglePage) && isHtmlMode" class="mt-1 text-xs text-gray-500">
                                 💡 HTML mode: Full HTML support with custom classes and styling
                             </p>
                         </div>
@@ -294,6 +294,10 @@ const props = defineProps({
 
 const siteUrl = window.location.origin;
 const isHtmlMode = ref(false);
+
+// Pages that should have HTML toggle (legal pages, about, contact)
+const htmlTogglePages = ['privacy-policy', 'terms-of-service', 'cookie-policy', 'disclaimer', 'about', 'contact'];
+const isHtmlTogglePage = computed(() => htmlTogglePages.includes(props.page.slug));
 
 const toggleHtmlMode = () => {
     isHtmlMode.value = !isHtmlMode.value;

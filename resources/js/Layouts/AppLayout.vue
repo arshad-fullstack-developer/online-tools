@@ -7,7 +7,7 @@
                     <!-- Logo -->
                     <div class="flex items-center">
                         <Link :href="route('home')" class="flex items-center group">
-                            <div v-if="$page.props.settings?.logo" class="h-40 rounded-lg overflow-hidden">
+                            <div v-if="$page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
                                 <img :src="`/storage/${$page.props.settings.logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                             </div>
                             <div v-else class="h-20 flex items-center">
@@ -151,10 +151,11 @@
                     <!-- Brand Section -->
                     <div class="lg:col-span-2">
                         <div class="flex items-center mb-4">
-                            <div v-if="$page.props.settings?.footer_logo" class="h-15 rounded-lg overflow-hidden">
+                            <!-- Show footer logo if it exists, otherwise fallback to header logo, then site name -->
+                            <div v-if="$page.props.settings?.footer_logo" class="h-20 rounded-lg overflow-hidden">
                                 <img :src="`/storage/${$page.props.settings.footer_logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                             </div>
-                            <div v-else-if="$page.props.settings?.logo" class="h-15 rounded-lg overflow-hidden">
+                            <div v-else-if="$page.props.settings?.logo" class="h-20 rounded-lg overflow-hidden">
                                 <img :src="`/storage/${$page.props.settings.logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                             </div>
                             <div v-else class="h-16 flex items-center">

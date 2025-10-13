@@ -83,13 +83,13 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="$refs.logoInput.click()">
+                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="logoInput.click()">
                                 <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <p class="text-sm text-gray-600">Click to upload logo</p>
                             </div>
-                            <input ref="logoInput" type="file" accept="image/*" @change="handleLogoUpload" class="hidden" />
+                            <input :ref="el => logoInput = el" type="file" accept="image/*" @change="handleLogoUpload" class="hidden" />
                         </div>
 
                         <!-- Footer Logo Upload -->
@@ -103,13 +103,13 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="$refs.footerLogoInput.click()">
+                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="footerLogoInput.click()">
                                 <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <p class="text-sm text-gray-600">Click to upload footer logo</p>
                             </div>
-                            <input ref="footerLogoInput" type="file" accept="image/*" @change="handleFooterLogoUpload" class="hidden" />
+                            <input :ref="el => footerLogoInput = el" type="file" accept="image/*" @change="handleFooterLogoUpload" class="hidden" />
                         </div>
 
                         <!-- Favicon Upload -->
@@ -123,13 +123,13 @@
                                     </svg>
                                 </button>
                             </div>
-                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="$refs.faviconInput.click()">
+                            <div v-else class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center cursor-pointer hover:border-primary-500 transition-colors" @click="faviconInput.click()">
                                 <svg class="w-12 h-12 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <p class="text-sm text-gray-600">Click to upload favicon</p>
                             </div>
-                            <input ref="faviconInput" type="file" accept="image/*" @change="handleFaviconUpload" class="hidden" />
+                            <input :ref="el => faviconInput = el" type="file" accept="image/*" @change="handleFaviconUpload" class="hidden" />
                         </div>
                     </div>
                 </div>
@@ -347,6 +347,23 @@ const removeFavicon = () => {
 };
 
 const submit = () => {
-    form.post(route('admin.settings.update'));
+    form.post(route('admin.settings.update'), {
+        forceFormData: true,
+        preserveScroll: false,
+        onSuccess: (page) => {
+            // Update previews with new values from server
+            if (page.props.settings.logo) {
+                logoPreview.value = `/storage/${page.props.settings.logo}`;
+            }
+            if (page.props.settings.footer_logo) {
+                footerLogoPreview.value = `/storage/${page.props.settings.footer_logo}`;
+            }
+            if (page.props.settings.favicon) {
+                faviconPreview.value = `/storage/${page.props.settings.favicon}`;
+            }
+            // Force page reload to update header/footer logos
+            setTimeout(() => window.location.reload(), 500);
+        },
+    });
 };
 </script>

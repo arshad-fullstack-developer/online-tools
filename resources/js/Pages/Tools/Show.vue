@@ -93,6 +93,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import { defineAsyncComponent } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import { getToolIcon } from '@/config/icons';
 
 // Import tool components
 const WordCounter = defineAsyncComponent(() => import("@/Components/Tools/WordCounter.vue"));
@@ -129,35 +130,6 @@ const props = defineProps({
         default: () => []
     },
 });
-
-const iconMap = {
-    'type': '📝',
-    'text': '🔤',
-    'braces': '{}',
-    'link': '🔗',
-    'cake': '🎂',
-    'activity': '💪',
-    'heart': '❤️',
-    'scale': '⚖️',
-    'calendar-range': '📆',
-    'percent': '%',
-    'calculator': '🧮',
-    'binary': '01',
-    'key': '🔑',
-    'calendar': '📅',
-    'fire': '🔥',
-    'droplet': '💧',
-    'body': '🧍',
-    'health': '🏥',
-    'code': '💻',
-    'map': '🗺️',
-    'trending-up': '📈',
-    'chart': '📊',
-    'coins': '💰',
-    'cpu': '🤖',
-};
-
-const getToolIcon = (icon) => iconMap[icon] || '⚙️';
 
 const getToolComponent = (componentName) => {
     const components = {

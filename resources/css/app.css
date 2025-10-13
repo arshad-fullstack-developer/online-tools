@@ -28,6 +28,7 @@
     }
 }
 
+
 @layer utilities {
     .line-clamp-2 {
         display: -webkit-box;
@@ -36,3 +37,14 @@
         overflow: hidden;
     }
 }
+
+.h-20 {
+    height: 4rem !important;
+}
+.h-32 {
+    height: 15rem !important;
+}
+.h-07 {
+    height: 7rem !important;
+}
+

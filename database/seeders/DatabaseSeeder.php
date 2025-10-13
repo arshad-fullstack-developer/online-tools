@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ToolSeeder::class,
             SettingSeeder::class,
             PageSeeder::class,
+            TimezoneSeeder::class,
         ]);
     }
 }

@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="p-6">
                     <Link :href="route('home')" class="flex items-center">
-                        <div v-if="$page.props.settings?.logo" class="h-12 rounded-xl overflow-hidden">
+                        <div v-if="$page.props.settings?.logo" class="h-07 rounded-xl overflow-hidden">
                             <img :src="`/storage/${$page.props.settings.logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                         </div>
                         <div v-else class="h-12 flex items-center">
