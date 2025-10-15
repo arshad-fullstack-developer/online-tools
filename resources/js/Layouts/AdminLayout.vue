@@ -6,7 +6,10 @@
                 <!-- Logo -->
                 <div class="p-6">
                     <Link :href="route('home')" class="flex items-center">
-                        <div v-if="$page.props.settings?.logo" class="h-07 rounded-xl overflow-hidden">
+                        <div v-if="$page.props.settings?.footer_logo" class="h-07 rounded-xl overflow-hidden">
+                            <img :src="`/storage/${$page.props.settings.footer_logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
+                        </div>
+                        <div v-else-if="$page.props.settings?.logo" class="h-07 rounded-xl overflow-hidden">
                             <img :src="`/storage/${$page.props.settings.logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain" />
                         </div>
                         <div v-else class="h-12 flex items-center">
@@ -94,6 +97,21 @@
                     </Link>
 
                     <Link 
+                        :href="route('admin.contact-submissions.index')"
+                        :class="[
+                            'flex items-center space-x-3 px-4 py-3 rounded-xl transition-all',
+                            route().current('admin.contact-submissions.*') 
+                                ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg' 
+                                : 'text-slate-300 hover:bg-slate-800'
+                        ]"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="font-medium">Contact</span>
+                    </Link>
+
+                    <Link 
                         :href="route('admin.settings.index')"
                         :class="[
                             'flex items-center space-x-3 px-4 py-3 rounded-xl transition-all',
@@ -124,7 +142,15 @@
 
                 <!-- Footer -->
                 <div class="p-4 border-t border-slate-700">
-                    <p class="text-xs text-slate-400 text-center">Online Tools Admin</p>
+                    <div class="flex justify-center mb-3">
+                        <div v-if="$page.props.settings?.footer_logo" class="h-12 rounded-lg overflow-hidden">
+                            <img :src="`/storage/${$page.props.settings.footer_logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain opacity-80" />
+                        </div>
+                        <div v-else-if="$page.props.settings?.logo" class="h-12 rounded-lg overflow-hidden">
+                            <img :src="`/storage/${$page.props.settings.logo}`" :alt="$page.props.settings?.site_name || 'Logo'" class="h-full w-auto object-contain opacity-80" />
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 text-center">{{ $page.props.settings?.site_name || 'Online Tools' }} Admin</p>
                     <p class="text-xs text-slate-500 text-center mt-1">© 2025 All Rights Reserved</p>
                 </div>
             </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\PageController as AdminPageController;
 use App\Http\Controllers\Admin\BlogController as AdminBlogController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\ContactSubmissionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -94,6 +95,13 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // Contact Submissions
+    Route::get('/contact-submissions', [ContactSubmissionController::class, 'index'])->name('contact-submissions.index');
+    Route::get('/contact-submissions/{id}', [ContactSubmissionController::class, 'show'])->name('contact-submissions.show');
+    Route::delete('/contact-submissions/{id}', [ContactSubmissionController::class, 'destroy'])->name('contact-submissions.destroy');
+    Route::post('/contact-submissions/{id}/mark-read', [ContactSubmissionController::class, 'markAsRead'])->name('contact-submissions.mark-read');
+    Route::post('/contact-submissions/{id}/mark-unread', [ContactSubmissionController::class, 'markAsUnread'])->name('contact-submissions.mark-unread');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -169,8 +169,6 @@ const removeImage = () => {
 };
 
 const submit = () => {
-    form.post(route('admin.blogs.update', props.blog.id), {
-        _method: 'put',
-    });
+    form.put(route('admin.blogs.update', props.blog.id));
 };
 </script>

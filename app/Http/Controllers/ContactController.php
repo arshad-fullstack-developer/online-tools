@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Mail\ContactFormMail;
 
 class ContactController extends Controller
@@ -22,13 +23,26 @@ class ContactController extends Controller
                 'message' => 'required|string|max:5000',
             ]);
 
-            // Log the attempt
-            Log::info('Contact form submission attempt', $validated);
+            // Save to database
+            DB::table('contact_submissions')->insert([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'subject' => $validated['subject'],
+                'message' => $validated['message'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
-            // Send email to admin
-            Mail::to('contact@toolxin.com')->send(new ContactFormMail($validated));
-
-            Log::info('Contact form email sent successfully');
+            // Try to send email, but don't fail if it doesn't work
+            try {
+                Mail::to('contact@toolxin.com')->send(new ContactFormMail($validated));
+                Log::info('Contact form email sent successfully');
+            } catch (\Exception $mailError) {
+                // Log the error but don't fail the request
+                Log::warning('Contact form email failed, but submission saved', [
+                    'error' => $mailError->getMessage()
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
@@ -51,7 +65,7 @@ class ContactController extends Controller
             
             return response()->json([
                 'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
+                'message' => 'There was an error submitting your message. Please try again.'
             ], 500);
         }
     }
