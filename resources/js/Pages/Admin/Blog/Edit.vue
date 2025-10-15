@@ -108,7 +108,7 @@
 </template>
 
 <script setup>
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, useForm, router } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
 import AdminLayout from '@/Layouts/AdminLayout.vue';
 import SeoFields from '@/Components/SeoFields.vue';
@@ -162,13 +162,41 @@ const handleImageUpload = (event) => {
 
 const removeImage = () => {
     form.featured_image = null;
-    imagePreview.value = null;
+    // Reset to original image if exists
+    imagePreview.value = props.blog.featured_image ? `/storage/${props.blog.featured_image}` : null;
     if (fileInput.value) {
         fileInput.value.value = '';
     }
 };
 
 const submit = () => {
-    form.put(route('admin.blogs.update', props.blog.id));
+    // Create FormData manually to ensure proper handling
+    const formData = new FormData();
+    
+    // Add all form fields
+    formData.append('title', form.title || '');
+    formData.append('slug', form.slug || '');
+    formData.append('excerpt', form.excerpt || '');
+    formData.append('content', form.content || '');
+    formData.append('author', form.author || '');
+    formData.append('is_published', form.is_published ? '1' : '0');
+    formData.append('published_at', form.published_at || '');
+    formData.append('meta_title', form.meta_title || '');
+    formData.append('meta_description', form.meta_description || '');
+    formData.append('meta_keywords', form.meta_keywords || '');
+    formData.append('_method', 'PUT');
+    
+    // Add image if selected
+    if (form.featured_image) {
+        formData.append('featured_image', form.featured_image);
+    }
+    
+    // Use router.post with FormData
+    router.post(route('admin.blogs.update', props.blog.id), formData, {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Reset form processing state
+        },
+    });
 };
 </script>
