@@ -100,6 +100,7 @@ class SettingController extends Controller
 
         // Clear all caches
         Cache::forget('site_settings');
+        Cache::forget('favicon_setting');
         Cache::flush();
 
         return back()->with('success', 'Settings updated successfully!');

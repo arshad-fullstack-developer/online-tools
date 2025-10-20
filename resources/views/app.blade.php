@@ -7,6 +7,21 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Favicon -->
+        @php
+            $faviconSetting = \Illuminate\Support\Facades\Cache::remember('favicon_setting', 3600, function() {
+                return \App\Models\Setting::where('key', 'favicon')->first();
+            });
+            $faviconUrl = $faviconSetting && $faviconSetting->value 
+                ? asset('storage/' . $faviconSetting->value) 
+                : asset('favicon.ico');
+        @endphp
+        <link rel="icon" type="image/x-icon" href="{{ $faviconUrl }}">
+        <link rel="shortcut icon" type="image/x-icon" href="{{ $faviconUrl }}">
+        <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ $faviconUrl }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ $faviconUrl }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
